@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSLCertificateTrackingWebApp", "SSLCertificateTrackingWebApp\SSLCertificateTrackingWebApp.csproj", "{A8911ECF-BF4F-4411-BF51-37B34C041A40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SSLCertificateTrackingWebApp", "SSLCertificateTrackingWebApp\SSLCertificateTrackingWebApp.csproj", "{A8911ECF-BF4F-4411-BF51-37B34C041A40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSLCertificateTrackEmailNotification", "SSLCertificateTrackEmailNotification\SSLCertificateTrackEmailNotification.csproj", "{87F42CF6-60A0-4828-A2F0-B18C479E89AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A8911ECF-BF4F-4411-BF51-37B34C041A40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8911ECF-BF4F-4411-BF51-37B34C041A40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8911ECF-BF4F-4411-BF51-37B34C041A40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87F42CF6-60A0-4828-A2F0-B18C479E89AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87F42CF6-60A0-4828-A2F0-B18C479E89AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87F42CF6-60A0-4828-A2F0-B18C479E89AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87F42CF6-60A0-4828-A2F0-B18C479E89AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

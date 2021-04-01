@@ -1,0 +1,49 @@
+﻿@page
+@model SSLCertificateTrackingWebApp.Pages.EmailServer.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>EmailServerConfiguration</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="EmailServerConfiguration.SMTPServer" class="control-label"></label>
+                <input asp-for="EmailServerConfiguration.SMTPServer" class="form-control" />
+                <span asp-validation-for="EmailServerConfiguration.SMTPServer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailServerConfiguration.Port" class="control-label"></label>
+                <input asp-for="EmailServerConfiguration.Port" class="form-control" />
+                <span asp-validation-for="EmailServerConfiguration.Port" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailServerConfiguration.Username" class="control-label"></label>
+                <input asp-for="EmailServerConfiguration.Username" class="form-control" />
+                <span asp-validation-for="EmailServerConfiguration.Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailServerConfiguration.Password" class="control-label"></label>
+                <input asp-for="EmailServerConfiguration.Password" class="form-control" />
+                <span asp-validation-for="EmailServerConfiguration.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

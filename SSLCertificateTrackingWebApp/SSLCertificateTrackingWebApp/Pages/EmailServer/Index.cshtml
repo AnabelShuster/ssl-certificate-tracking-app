@@ -1,0 +1,40 @@
+﻿@page
+@model SSLCertificateTrackingWebApp.Pages.EmailServer.IndexModel
+
+@{
+    ViewData["Title"] = "Email Server Settings";
+}
+
+<div>
+    <h4>Email Server Settings</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EmailServerConfiguration[0].SMTPServer)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EmailServerConfiguration[0].SMTPServer)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EmailServerConfiguration[0].Port)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EmailServerConfiguration[0].Port)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EmailServerConfiguration[0].Username)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EmailServerConfiguration[0].Username)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EmailServerConfiguration[0].Password)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EmailServerConfiguration[0].Password)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.EmailServerConfiguration[0].ID">Edit</a>
+</div>
