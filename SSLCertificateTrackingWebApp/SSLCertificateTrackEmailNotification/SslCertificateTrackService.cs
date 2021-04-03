@@ -1,47 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 using System.Net.Mail;
 using System.Net;
 using System.IO;
 using System.Configuration;
-using System.Windows.Forms;
 using Timer = System.Threading.Timer;
+using System.Data.SqlClient;
 
 namespace SSLCertificateTrackEmailNotification
 {
     public partial class SslCertificateTrackService : ServiceBase
     {
+        //Email Server fields
+        private string smtpServer;
+        private string smtpPort;
+        private string smtpUsername;
+        private string smtpPassword;
+        private string emailRecipients;
+        private string[] allRecipients;
+        private string emailSender;
+        private string emailSubject;
+
+        //Scheduler field(s)
+        private Timer Schedular;
         public SslCertificateTrackService()
         {
             InitializeComponent();
         }
         protected override void OnStart(string[] args)
         {
-            this.WriteToFile("Start SSLCertificateTrackEmail service {0}");
+            WriteToFile("Start SSLCertificateTrackEmail service {0}");
             ScheduleService();
         }
         protected override void OnStop()
         {
-            this.WriteToFile("SSLCertificateTrackEmailNotification service stopped.");
-            this.Schedular.Dispose();
+            WriteToFile("SSLCertificateTrackEmailNotification service stopped.");
+            Schedular.Dispose();
         }
-
-        private Timer Schedular;
         public void ScheduleService()
         {
             try
             {
                 Schedular = new Timer(new TimerCallback(SchedularCallback));
                 string mode = ConfigurationManager.AppSettings["Mode"].ToUpper();
-                this.WriteToFile("SSLCertificateTrackEmailNotification Service Mode: " + mode + " {0}");
+                WriteToFile("SSLCertificateTrackEmailNotification Service Mode: " + mode + " {0}");
 
                 //Set the Default Time.
                 DateTime scheduledTime = DateTime.MinValue;
@@ -74,7 +77,7 @@ namespace SSLCertificateTrackEmailNotification
                 TimeSpan timeSpan = scheduledTime.Subtract(DateTime.Now);
                 string schedule = string.Format("{0} day(s) {1} hour(s) {2} minute(s) {3} seconds(s)", timeSpan.Days, timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
 
-                this.WriteToFile("SSLCertificateTrackEmailNotification Service scheduled to run after: " + schedule + " {0}");
+                WriteToFile("SSLCertificateTrackEmailNotification Service scheduled to run after: " + schedule + " {0}");
 
                 //Get the difference in Minutes between the Scheduled and Current Time.
                 int dueTime = Convert.ToInt32(timeSpan.TotalMilliseconds);
@@ -84,7 +87,7 @@ namespace SSLCertificateTrackEmailNotification
             }
             catch (Exception ex)
             {
-                this.WriteToFile("SSLCertificateTrackEmailNotification Service Error on: {0} " + ex.Message + ex.StackTrace);
+                WriteToFile("SSLCertificateTrackEmailNotification Service Error on: {0} " + ex.Message + ex.StackTrace);
 
                 //Stop the Windows Service.
                 using (ServiceController serviceController = new ServiceController("SSLCertificateTrackEmailNotification"))
@@ -95,47 +98,91 @@ namespace SSLCertificateTrackEmailNotification
         }
         private void SchedularCallback(object e)
         {
-            this.WriteToFile("SSLCertificateTrackEmailNotification Service Log Created {0}");
-            SendMail();
+            WriteToFile("SSLCertificateTrackEmailNotification Service Log Created {0}");
+            PrepareAndSendEmail();
             ScheduleService();
         }
 
         /// <summary>
-        /// Sends email via the configured SMTP Server
+        /// Gets smtp server information from database or app.config if no rows return
+        /// Sends email via smtp
         /// </summary>
-        private void SendMail()
+        private void PrepareAndSendEmail()
         {
-            this.WriteToFile("Sending Email {0}");
+            try
+            {
+                WriteToFile("Start getting SMTP Server Information from Database {0}");
+                string sql = "SELECT * FROM EmailServerConfiguration";
+                string connetionString = ConfigurationManager.ConnectionStrings["SSLCertificateTrackingWebAppContext"].ConnectionString;
 
-            string emailRecipients = ConfigurationManager.AppSettings["EmailRecipients"];
-     
-            MailMessage emailMessage = new MailMessage()
-              {
-                    From = new MailAddress(ConfigurationManager.AppSettings["EmailSender"]),
+                SqlConnection cnn = new SqlConnection(connetionString);
+                WriteToFile("Connecting to Database {0}");
+                cnn.Open();
+
+                SqlCommand cmd = new SqlCommand(sql, cnn);
+
+                SqlDataReader dataReader = cmd.ExecuteReader();
+                dataReader.Read();
+
+                if (dataReader.HasRows)
+                {
+                    WriteToFile("Getting Email Configuration from Database {0}");
+                    smtpServer = dataReader["SMTPServer"].ToString();
+                    smtpPort = dataReader["Port"].ToString();
+                    smtpUsername = dataReader["Username"].ToString();
+                    smtpPassword = PasswordDecryptionUtil.Decrypt(dataReader["Password"].ToString());
+                }
+                else
+                {
+                    WriteToFile("No information found in database. Getting Email Configuration from .config {0}");
+                    smtpServer = ConfigurationManager.AppSettings["SMTPServer"];
+                    smtpPort = ConfigurationManager.AppSettings["SMTPServerPort"];
+                    smtpUsername = ConfigurationManager.AppSettings["SMTPServerUsername"];
+                    smtpPassword = ConfigurationManager.AppSettings["SMTPServerPassword"];
+                }
+
+                emailRecipients = ConfigurationManager.AppSettings["EmailRecipients"];
+                emailSender = ConfigurationManager.AppSettings["EmailSender"];
+                emailSubject = ConfigurationManager.AppSettings["EmailSubject"];
+
+                MailMessage emailMessage = new MailMessage()
+                {
+                    From = new MailAddress(emailSender),
                     IsBodyHtml = true,
                     Body = GetHtml(),
-                    Subject = ConfigurationManager.AppSettings["EmailSubject"],
+                    Subject = emailSubject,
                 };
 
-            string[] allRecipients = emailRecipients.Trim().Split(';');
-            foreach (string recipient in allRecipients)
-            {
-                emailMessage.To.Add(new MailAddress(recipient));
+                allRecipients = emailRecipients.Trim().Split(';');
+
+                foreach (string recipient in allRecipients)
+                {
+                    emailMessage.To.Add(new MailAddress(recipient));
+                }
+
+                SmtpClient Client = new SmtpClient
+                {
+                    Host = smtpServer,
+                    Port = Convert.ToInt32(smtpPort),
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    Credentials = new NetworkCredential(smtpUsername, smtpPassword)
+                };
+
+                WriteToFile("Sending Email {0}");
+
+                Client.Send(emailMessage);
+
+                WriteToFile("SSL Certificate Email Sent successfully {0}");
+                dataReader.Close();
+                cmd.Dispose();
+                cnn.Close();
             }
-
-            SmtpClient Client = new SmtpClient
+            catch (Exception ex)
             {
-                Host = ConfigurationManager.AppSettings["SMTPServer"],
-                Port = Convert.ToInt32(ConfigurationManager.AppSettings["SMTPServerPort"]),
-                EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["SMTPServerEnableSsl"]),
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                Credentials = new NetworkCredential(ConfigurationManager.AppSettings["SMTPServerUsername"], ConfigurationManager.AppSettings["SMTPServerPassword"])
-            };
-
-            Client.Send(emailMessage);      
-
-            this.WriteToFile("SSL Certificate Email Sent successfully {0}");
-         }
+                WriteToFile("SSLCertificateTrackEmailNotification Service Error on: {0} " + ex.Message + ex.StackTrace);
+            }
+        }
 
         /// <summary>
         /// Use to Format the HTML Body of the Email
@@ -164,14 +211,14 @@ namespace SSLCertificateTrackEmailNotification
                 messageBody += htmlHeaderRowEnd;
 
                 //Loop all the rows from grid vew and added to html td  
-               // for (int i = 0; i <= grid.RowCount - 1; i++)
-               // {
-                    messageBody = messageBody + htmlTrStart;
-                    messageBody = messageBody + htmlTdStart + "WO# 58901452" + htmlTdEnd; //adding Work Order Tracking #
-                    messageBody = messageBody + htmlTdStart + "Gmail Test Certificate" + htmlTdEnd; //adding Certificate Name  
-                    messageBody = messageBody + htmlTdStart + "01/02/2022" + htmlTdEnd; //adding Certificate Expiration Date
-                    messageBody = messageBody + htmlTrEnd;
-               // }
+                // for (int i = 0; i <= grid.RowCount - 1; i++)
+                // {
+                messageBody = messageBody + htmlTrStart;
+                messageBody = messageBody + htmlTdStart + "WO# 58901452" + htmlTdEnd; //adding Work Order Tracking #
+                messageBody = messageBody + htmlTdStart + "Gmail Test Certificate" + htmlTdEnd; //adding Certificate Name  
+                messageBody = messageBody + htmlTdStart + "01/02/2022" + htmlTdEnd; //adding Certificate Expiration Date
+                messageBody = messageBody + htmlTrEnd;
+                // }
                 messageBody += htmlTableEnd;
 
                 return messageBody; // return HTML Table as string from this function  
@@ -192,7 +239,7 @@ namespace SSLCertificateTrackEmailNotification
 
             using (StreamWriter writer = new StreamWriter(path, true))
             {
-                writer.WriteLine(string.Format(text, DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")));
+                writer.WriteLine(string.Format(text, DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt")));
                 writer.Close();
             }
         }

@@ -3,20 +3,19 @@ using System.Security.Cryptography;
 using System.Text;
 using System.IO;
 
-namespace SSLCertificateTrackingWebApp
+namespace SSLCertificateTrackEmailNotification
 {
     /// <summary>
-    /// The class is used to Encrypt password
+    /// The class is used Decrypt password
     /// Reference:
     /// https://www.aspsnippets.com/Articles/Encrypt-and-Decrypt-Username-or-Password-stored-in-database-in-Windows-Application-using-C-and-VBNet.aspx
     /// </summary>
-    public static class PasswordEncryptionUtil
+    public static class PasswordDecryptionUtil
     {
-        //This is used to encrypt the password 
-        public static string Encrypt(string clearText)
+        public static string Decrypt(string cipherText)
         {
             string EncryptionKey = "MAKV2SPBNI99212";
-            byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
+            byte[] cipherBytes = Convert.FromBase64String(cipherText);
             using (Aes encryptor = Aes.Create())
             {
                 Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
@@ -24,15 +23,17 @@ namespace SSLCertificateTrackingWebApp
                 encryptor.IV = pdb.GetBytes(16);
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
                     {
-                        cs.Write(clearBytes, 0, clearBytes.Length);
+                        cs.Write(cipherBytes, 0, cipherBytes.Length);
                         cs.Close();
                     }
-                    clearText = Convert.ToBase64String(ms.ToArray());
+                    cipherText = Encoding.Unicode.GetString(ms.ToArray());
                 }
             }
-            return clearText;
-        }              
+            return cipherText;
+        }
+
+              
     }
 }
