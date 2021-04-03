@@ -1,0 +1,14 @@
+.\vs
+.\vscode
+**/bin/**
+**/obj/**
+/SSLCertificateTrackingWebApp/SSLCertificateTrackingWebApp/Properties/PublishProfiles
+/SSLCertificateTrackingWebApp/SSLCertificateTrackingWebApp/Properties
+*.cache
+*.dll
+*.exe
+*.pdb
+*.suo
+*.user
+
+/SSLCertificateTrackingWebApp/SSLCertificateTrackEmailNotificationSetup/Debug
