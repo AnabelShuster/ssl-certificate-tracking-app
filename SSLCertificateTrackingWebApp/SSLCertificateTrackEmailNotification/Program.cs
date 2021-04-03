@@ -17,7 +17,7 @@ namespace SSLCertificateTrackEmailNotification
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-                new Service1()
+                new SslCertificateTrackService()
             };
             ServiceBase.Run(ServicesToRun);
         }
