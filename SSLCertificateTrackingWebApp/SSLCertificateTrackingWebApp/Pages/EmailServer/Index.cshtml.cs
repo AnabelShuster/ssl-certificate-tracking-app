@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SSLCertificateTrackingWebApp.Data;
 using SSLCertificateTrackingWebApp.Models;
 
+
 namespace SSLCertificateTrackingWebApp.Pages.EmailServer
 {
     public class IndexModel : PageModel
@@ -24,6 +25,19 @@ namespace SSLCertificateTrackingWebApp.Pages.EmailServer
         public async Task OnGetAsync()
         {
             EmailServerConfiguration = await _context.EmailServerConfiguration.ToListAsync();
+            if (EmailServerConfiguration.Count == 0)
+            {
+                EmailServerConfiguration emailServerInfo = new EmailServerConfiguration
+                {
+                    ID = 0,
+                    SMTPServer = "",
+                    Port = "",
+                    Username = "",
+                    Password = ""
+                };
+
+                EmailServerConfiguration.Add(emailServerInfo);
+            }
         }
     }
 }

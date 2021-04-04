@@ -35,10 +35,6 @@ namespace SSLCertificateTrackingWebApp.Pages.EmailServer
 
             EmailServerConfiguration = await _context.EmailServerConfiguration.FirstOrDefaultAsync(m => m.ID == id);
 
-            if (EmailServerConfiguration == null)
-            {
-                return NotFound();
-            }
             return Page();
         }
 
@@ -46,28 +42,32 @@ namespace SSLCertificateTrackingWebApp.Pages.EmailServer
         // more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+
+            if (EmailServerConfiguration.ID == 0)
             {
-                return Page();
-            }
-
-            _context.Attach(EmailServerConfiguration).State = EntityState.Modified;
-
-            try
-            {
-                EmailServerConfiguration.Password = PasswordEncryptionUtil.Encrypt(EmailServerConfiguration.Password);
-
+                _context.EmailServerConfiguration.Add(EmailServerConfiguration);
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!EmailServerConfigurationExists(EmailServerConfiguration.ID))
+                _context.Attach(EmailServerConfiguration).State = EntityState.Modified;
+
+                try
                 {
-                    return NotFound();
+                    EmailServerConfiguration.Password = PasswordEncryptionUtil.Encrypt(EmailServerConfiguration.Password);
+
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!EmailServerConfigurationExists(EmailServerConfiguration.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
 
@@ -78,5 +78,5 @@ namespace SSLCertificateTrackingWebApp.Pages.EmailServer
         {
             return _context.EmailServerConfiguration.Any(e => e.ID == id);
         }
-   }
+    }
 }
