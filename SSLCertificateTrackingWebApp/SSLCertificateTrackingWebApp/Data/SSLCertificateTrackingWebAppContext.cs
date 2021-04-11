@@ -15,5 +15,9 @@ namespace SSLCertificateTrackingWebApp.Data
         }
 
         public DbSet<SSLCertificateTrackingWebApp.Models.EmailServerConfiguration> EmailServerConfiguration { get; set; }
+
+        public DbSet<SSLCertificateTrackingWebApp.Models.CertificateCategory> CertificateCategory { get; set; }
+
+        public DbSet<SSLCertificateTrackingWebApp.Models.CertificateInfo> CertificateInfo { get; set; }
     }
 }

@@ -1,0 +1,234 @@
+﻿@page
+@model SSLCertificateTrackingWebApp.Pages.CertificatesInfo.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].CertificateCategoryID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].WorkOrderNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].CertificateName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].CommonName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].CertificateTemplate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].Hosted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].SubjectAlternativeNames)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].CertificateType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].WebServer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].Organization)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].ServersInstalledOn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].OperatingSystem)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].Department)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].CertificateEffectiveDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].ApplicationName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].Requester)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].CertificateExpirationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].IssuesBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].ServerName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].IssuedEmailAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].ServerType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].SpecialistWhoIssued)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].CMCert)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].DomainMember)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].Approver)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].IssuedFromNewPKI)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].Requested)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].ApprovedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].DeclinedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].RevokedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].ReplacedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].DiscoveredDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.CertificateInfo) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CertificateCategoryID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkOrderNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CertificateName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CommonName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CertificateTemplate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hosted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubjectAlternativeNames)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CertificateType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WebServer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Organization)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServersInstalledOn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OperatingSystem)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CertificateEffectiveDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApplicationName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Requester)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CertificateExpirationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IssuesBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IssuedEmailAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServerType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SpecialistWhoIssued)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CMCert)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DomainMember)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Approver)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IssuedFromNewPKI)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Requested)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApprovedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeclinedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RevokedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReplacedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiscoveredDate)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.CertificateID">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.CertificateID">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.CertificateID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

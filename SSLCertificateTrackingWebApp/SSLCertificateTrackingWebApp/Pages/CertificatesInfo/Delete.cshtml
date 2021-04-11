@@ -1,0 +1,226 @@
+﻿@page
+@model SSLCertificateTrackingWebApp.Pages.CertificatesInfo.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>CertificateInfo</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.CertificateCategoryID)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.CertificateCategoryID)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.WorkOrderNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.WorkOrderNumber)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.CertificateName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.CertificateName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.CommonName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.CommonName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.CertificateTemplate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.CertificateTemplate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.Hosted)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.Hosted)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.SubjectAlternativeNames)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.SubjectAlternativeNames)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.CertificateType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.CertificateType)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.WebServer)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.WebServer)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.Organization)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.Organization)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.ServersInstalledOn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.ServersInstalledOn)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.OperatingSystem)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.OperatingSystem)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.Department)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.Department)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.CertificateEffectiveDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.CertificateEffectiveDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.ApplicationName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.ApplicationName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.Requester)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.Requester)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.CertificateExpirationDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.CertificateExpirationDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.IssuesBy)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.IssuesBy)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.ServerName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.ServerName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.Notes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.Notes)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.IssuedEmailAddress)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.IssuedEmailAddress)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.ServerType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.ServerType)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.SpecialistWhoIssued)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.SpecialistWhoIssued)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.CMCert)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.CMCert)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.DomainMember)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.DomainMember)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.Approver)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.Approver)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.IssuedFromNewPKI)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.IssuedFromNewPKI)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.Status)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.Requested)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.Requested)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.ApprovedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.ApprovedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.DeclinedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.DeclinedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.RevokedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.RevokedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.ReplacedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.ReplacedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.DiscoveredDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateInfo.DiscoveredDate)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="CertificateInfo.CertificateID" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>
