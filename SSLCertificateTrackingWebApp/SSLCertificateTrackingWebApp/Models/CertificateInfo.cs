@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 using System.Text;
 using System.IO;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SSLCertificateTrackingWebApp.Models
 {
@@ -15,6 +16,7 @@ namespace SSLCertificateTrackingWebApp.Models
         public int CertificateID { get; set; }
 
         [Required]
+        [ForeignKey("CertificateCategoryID")]
         [Display(Name = "Certificate Category")]
         public int CertificateCategoryID { get; set; }
 
@@ -28,6 +30,16 @@ namespace SSLCertificateTrackingWebApp.Models
         [Display(Name = "Common Name")]
         public string CommonName { get; set; }
 
+        [Display(Name = "Certificate Type")]
+        public string CertificateType { get; set; }
+
+        [Display(Name = "Certificate Expiration Date")]
+        [DataType(DataType.Date)]
+        public DateTime CertificateExpirationDate { get; set; }
+
+        [Display(Name = "Server Name")]
+        public string ServerName { get; set; }
+
         [Display(Name = "Certificate Template")]
         public string CertificateTemplate { get; set; }
         public string Hosted { get; set; }
@@ -35,40 +47,26 @@ namespace SSLCertificateTrackingWebApp.Models
         [Display(Name = "Subject Alternative Names")]
         public string SubjectAlternativeNames { get; set; }
 
-        [Display(Name = "Certificate Type")]
-        public string CertificateType { get; set; }
-
         [Display(Name = "Web Server")]
         public string WebServer { get; set; }
-        public string Organization { get; set; }
-
+    
         [Display(Name = "Servers Installed On")]
         public string ServersInstalledOn { get; set; }
 
         [Display(Name = "Operating System")]
         public string OperatingSystem { get; set; }
+        public string Organization { get; set; }
         public string Department { get; set; }
-
+        public string Requester { get; set; }
         [Display(Name = "Certificate Effective Date")]
         [DataType(DataType.Date)]
         public DateTime CertificateEffectiveDate { get; set; }
 
         [Display(Name = "Application Name")]
-        public string ApplicationName { get; set; }
-        public string Requester { get; set; }
-
-        [Display(Name = "Certificate Expiration Date")]
-        [DataType(DataType.Date)]
-        public DateTime CertificateExpirationDate { get; set; }
+        public string ApplicationName { get; set; }       
 
         [Display(Name = "Issued By")]
         public string IssuesBy { get; set; }
-
-        [Display(Name = "Server Name")]
-        public string ServerName { get; set; }
-
-        [DataType(DataType.MultilineText)]
-        public string Notes { get; set; }
 
         [Display(Name = "Issued Email Address")]
         [DataType(DataType.EmailAddress)]
@@ -90,7 +88,9 @@ namespace SSLCertificateTrackingWebApp.Models
         [Display(Name = "Issued From New PKI")]
         public bool IssuedFromNewPKI { get; set; }
         public string Status { get; set; }
-        public string Requested { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime RequestedDate { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime ApprovedDate { get; set; }
@@ -106,5 +106,8 @@ namespace SSLCertificateTrackingWebApp.Models
 
         [DataType(DataType.Date)]
         public DateTime DiscoveredDate { get; set; }
+
+        [DataType(DataType.MultilineText)]
+        public string Notes { get; set; }
     }
 }
