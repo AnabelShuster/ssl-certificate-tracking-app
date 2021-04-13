@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using SSLCertificateTrackingWebApp.Data;
 using SSLCertificateTrackingWebApp.Models;
 
@@ -19,8 +20,18 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
             _context = context;
         }
 
+        [BindProperty]
+        public List<SelectListItem> CertificateCategoryList { get; set; }
+
         public IActionResult OnGet()
         {
+            CertificateCategoryList = _context.CertificateCategory.Select(a =>
+                                 new SelectListItem
+                                 {
+                                     Value = a.CertificateCategoryID.ToString(),
+                                     Text = a.CertificateCategoryName
+                                 }).ToList();
+
             return Page();
         }
 
@@ -35,6 +46,10 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
             {
                 return Page();
             }
+
+            string categorySelected = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryID).FirstOrDefault().ToString();
+
+            CertificateInfo.CertificateCategoryID = Convert.ToInt32(categorySelected);
 
             _context.CertificateInfo.Add(CertificateInfo);
             await _context.SaveChangesAsync();

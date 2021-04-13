@@ -16,13 +16,19 @@
             <input type="hidden" asp-for="CertificateInfo.CertificateID" />
             <div class="form-group">
                 <label asp-for="CertificateInfo.CertificateCategoryID" class="control-label"></label>
-                <input asp-for="CertificateInfo.CertificateCategoryID" class="form-control" />
+                <select name="CertificateInfo.CertificateCategoryID" asp-items="Model.CertificateCategoryList">
+                </select>
                 <span asp-validation-for="CertificateInfo.CertificateCategoryID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CertificateInfo.WorkOrderNumber" class="control-label"></label>
                 <input asp-for="CertificateInfo.WorkOrderNumber" class="form-control" />
                 <span asp-validation-for="CertificateInfo.WorkOrderNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CertificateInfo.CertificateExpirationDate" class="control-label"></label>
+                <input asp-for="CertificateInfo.CertificateExpirationDate" class="form-control" />
+                <span asp-validation-for="CertificateInfo.CertificateExpirationDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CertificateInfo.CertificateName" class="control-label"></label>
@@ -93,11 +99,6 @@
                 <label asp-for="CertificateInfo.Requester" class="control-label"></label>
                 <input asp-for="CertificateInfo.Requester" class="form-control" />
                 <span asp-validation-for="CertificateInfo.Requester" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CertificateInfo.CertificateExpirationDate" class="control-label"></label>
-                <input asp-for="CertificateInfo.CertificateExpirationDate" class="form-control" />
-                <span asp-validation-for="CertificateInfo.CertificateExpirationDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CertificateInfo.IssuesBy" class="control-label"></label>

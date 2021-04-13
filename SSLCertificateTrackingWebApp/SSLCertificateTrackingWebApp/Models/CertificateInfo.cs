@@ -60,7 +60,7 @@ namespace SSLCertificateTrackingWebApp.Models
         public string Requester { get; set; }
         [Display(Name = "Certificate Effective Date")]
         [DataType(DataType.Date)]
-        public DateTime CertificateEffectiveDate { get; set; }
+        public DateTime? CertificateEffectiveDate { get; set; }
 
         [Display(Name = "Application Name")]
         public string ApplicationName { get; set; }       
@@ -90,22 +90,22 @@ namespace SSLCertificateTrackingWebApp.Models
         public string Status { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime RequestedDate { get; set; }
+        public DateTime? RequestedDate { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime ApprovedDate { get; set; }
+        public DateTime? ApprovedDate { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime DeclinedDate { get; set; }
+        public DateTime? DeclinedDate { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime RevokedDate { get; set; }
+        public DateTime? RevokedDate { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime ReplacedDate { get; set; }
+        public DateTime? ReplacedDate { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime DiscoveredDate { get; set; }
+        public DateTime? DiscoveredDate { get; set; }
 
         [DataType(DataType.MultilineText)]
         public string Notes { get; set; }

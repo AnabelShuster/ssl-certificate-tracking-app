@@ -21,7 +21,14 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
         }
 
         [BindProperty]
+        public List<SelectListItem> CertificateCategoryList { get; set; }
+
+        [BindProperty]
         public CertificateInfo CertificateInfo { get; set; }
+
+        public string CategorySelectedId { get; set; }
+
+        public string CategorySelectedName { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -31,6 +38,25 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
             }
 
             CertificateInfo = await _context.CertificateInfo.FirstOrDefaultAsync(m => m.CertificateID == id);
+
+            CategorySelectedId = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryID).FirstOrDefault().ToString();
+            CategorySelectedName = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryName).FirstOrDefault().ToString();
+
+            //Creates List of Category Id and Category Name from the CertificateCategory table
+            CertificateCategoryList = _context.CertificateCategory.Select(a =>
+                 new SelectListItem
+                 {
+                     Value = a.CertificateCategoryID.ToString(),
+                     Text = a.CertificateCategoryName,
+                 }).ToList();
+
+            for (int i = 0; i < CertificateCategoryList.Count; i++)
+            {
+                if (CertificateCategoryList[i].Value == CategorySelectedId)
+                {
+                    CertificateCategoryList[i].Selected = true;
+                }
+            }
 
             if (CertificateInfo == null)
             {
@@ -47,6 +73,10 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
             {
                 return Page();
             }
+
+            string categorySelected = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryID).FirstOrDefault().ToString();
+
+            CertificateInfo.CertificateCategoryID = Convert.ToInt32(categorySelected);
 
             _context.Attach(CertificateInfo).State = EntityState.Modified;
 
