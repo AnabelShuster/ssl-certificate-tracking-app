@@ -13,6 +13,8 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
 {
     public class CreateModel : PageModel
     {
+        private readonly Random _random = new Random();
+
         private readonly SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext _context;
 
         public CreateModel(SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext context)
@@ -23,6 +25,12 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
         [BindProperty]
         public List<SelectListItem> CertificateCategoryList { get; set; }
 
+        [BindProperty]
+        public CertificateInfo CertificateInfo { get; set; }
+
+        [BindProperty]
+        public int RandomWorkOrderNumber => _random.Next(999999999);
+
         public IActionResult OnGet()
         {
             CertificateCategoryList = _context.CertificateCategory.Select(a =>
@@ -30,13 +38,10 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
                                  {
                                      Value = a.CertificateCategoryID.ToString(),
                                      Text = a.CertificateCategoryName
-                                 }).ToList();
+                                 }).ToList();            
 
             return Page();
         }
-
-        [BindProperty]
-        public CertificateInfo CertificateInfo { get; set; }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
@@ -50,6 +55,7 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
             string categorySelected = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryID).FirstOrDefault().ToString();
 
             CertificateInfo.CertificateCategoryID = Convert.ToInt32(categorySelected);
+            CertificateInfo.WorkOrderNumber = RandomWorkOrderNumber;
 
             _context.CertificateInfo.Add(CertificateInfo);
             await _context.SaveChangesAsync();

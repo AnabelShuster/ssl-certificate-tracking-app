@@ -5,13 +5,16 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>CertificateInfo</h4>
+<h1>Edit Certificate Information</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form method="post">
+            <div class="form-group">
+                <label asp-for="CertificateInfo.WorkOrderNumber" class="control-label"></label>
+                <input asp-for="CertificateInfo.WorkOrderNumber" disabled class="form-control" />
+                <span asp-validation-for="CertificateInfo.WorkOrderNumber" class="text-danger"></span>
+            </div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="CertificateInfo.CertificateID" />
             <div class="form-group">
@@ -19,11 +22,6 @@
                 <select name="CertificateInfo.CertificateCategoryID" asp-items="Model.CertificateCategoryList">
                 </select>
                 <span asp-validation-for="CertificateInfo.CertificateCategoryID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CertificateInfo.WorkOrderNumber" class="control-label"></label>
-                <input asp-for="CertificateInfo.WorkOrderNumber" class="form-control" />
-                <span asp-validation-for="CertificateInfo.WorkOrderNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CertificateInfo.CertificateExpirationDate" class="control-label"></label>

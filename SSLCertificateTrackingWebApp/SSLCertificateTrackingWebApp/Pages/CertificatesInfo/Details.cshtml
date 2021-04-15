@@ -5,23 +5,22 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Certificate Information Details</h1>
 
 <div>
-    <h4>CertificateInfo</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CertificateInfo.CertificateCategoryID)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CategorySelectedName)
-        </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CertificateInfo.WorkOrderNumber)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CertificateInfo.WorkOrderNumber)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateInfo.CertificateCategoryID)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CategorySelectedName)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CertificateInfo.CertificateExpirationDate)

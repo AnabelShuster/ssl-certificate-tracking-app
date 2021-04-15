@@ -5,7 +5,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Certificate Information</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -14,17 +14,20 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].WorkOrderNumber)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.CertificateInfo[0].CertificateCategoryID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateInfo[0].CertificateName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CertificateInfo[0].CertificateExpirationDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CertificateInfo[0].WorkOrderNumber)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.CertificateInfo[0].Notes)
-            </th>          
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -32,13 +35,16 @@
 @foreach (var item in Model.NewCertificateInfoList) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.MinimalCertWorkOrderNumber)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.MinimalCategorySelectedName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MinimalCertExpireDate)
+                @Html.DisplayFor(modelItem => item.MinimalCertName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MinimalCertWorkOrderNumber)
+                @Html.DisplayFor(modelItem => item.MinimalCertExpireDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.MinimalCertNotes)
