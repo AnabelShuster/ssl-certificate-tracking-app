@@ -45,7 +45,6 @@ namespace SSLCertificateTrackingWebApp.Pages.EmailServer
 
             if (EmailServerConfiguration.ID == 0)
             {
-                EmailServerConfiguration.ID = 1;
                 EmailServerConfiguration.Password = PasswordEncryptionUtil.Encrypt(EmailServerConfiguration.Password);
                 _context.EmailServerConfiguration.Add(EmailServerConfiguration);
                 await _context.SaveChangesAsync();

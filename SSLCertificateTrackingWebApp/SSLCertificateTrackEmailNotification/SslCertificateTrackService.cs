@@ -7,6 +7,7 @@ using System.IO;
 using System.Configuration;
 using Timer = System.Threading.Timer;
 using System.Data.SqlClient;
+using System.Collections.Generic;
 
 namespace SSLCertificateTrackEmailNotification
 {
@@ -21,6 +22,10 @@ namespace SSLCertificateTrackEmailNotification
         private string[] allRecipients;
         private string emailSender;
         private string emailSubject;
+        private List<Dictionary<string, string>> rows;
+        private Dictionary<string, string> column;
+        private SmtpClient smtpClient;
+        private MailMessage emailMessage;
 
         //Scheduler field(s)
         private Timer Schedular;
@@ -103,6 +108,11 @@ namespace SSLCertificateTrackEmailNotification
             ScheduleService();
         }
 
+        private SqlCommand CreateSqlCommand(string selectStatement, SqlConnection sqlConnect)
+        {
+            SqlCommand cmd = new SqlCommand(selectStatement, sqlConnect);
+            return cmd;
+        }
         /// <summary>
         /// Gets smtp server information from database or app.config if no rows return
         /// Sends email via smtp
@@ -111,26 +121,46 @@ namespace SSLCertificateTrackEmailNotification
         {
             try
             {
-                WriteToFile("Start getting SMTP Server Information from Database {0}");
-                string sql = "SELECT * FROM EmailServerConfiguration";
                 string connetionString = ConfigurationManager.ConnectionStrings["SSLCertificateTrackingWebAppContext"].ConnectionString;
-
                 SqlConnection cnn = new SqlConnection(connetionString);
                 WriteToFile("Connecting to Database {0}");
                 cnn.Open();
 
-                SqlCommand cmd = new SqlCommand(sql, cnn);
+                WriteToFile("Start getting Certificate Information from Database {0}");
+                string certificateInfoSelectAll = "  SELECT t2.CertificateCategoryName, t1.WorkOrderNumber, t1.CertificateExpirationDate FROM CertificateInfo AS t1 LEFT JOIN CertificateCategory AS t2 on t1.CertificateCategoryID = t2.CertificateCategoryID";
+                SqlCommand certificateInfoSqlCommand = CreateSqlCommand(certificateInfoSelectAll, cnn); ;
+                SqlDataReader certifiateInfoDataReader = certificateInfoSqlCommand.ExecuteReader();
+    
+                rows = new List<Dictionary<string, string>>();
+                column = new Dictionary<string, string>();
 
-                SqlDataReader dataReader = cmd.ExecuteReader();
-                dataReader.Read();
+                WriteToFile("Getting Certificate Info from Database {0}");
 
-                if (dataReader.HasRows)
+                while (certifiateInfoDataReader.Read())
+                {
+                    column = new Dictionary<string, string>
+                    {
+                        ["CertificateCategoryName"] = certifiateInfoDataReader["CertificateCategoryName"].ToString(),
+                        ["WorkOrderNumber"] = certifiateInfoDataReader["WorkOrderNumber"].ToString(),
+                        ["CertificateExpirationDate"] = certifiateInfoDataReader["CertificateExpirationDate"].ToString()
+                    };
+                    rows.Add(column);
+                }
+                certifiateInfoDataReader.Close();
+
+                WriteToFile("Start getting SMTP Server Information from Database {0}");
+                string emailServerConfigSelectAll = "SELECT * FROM EmailServerConfiguration";
+                SqlCommand emailServerConfigSqlCommand = CreateSqlCommand(emailServerConfigSelectAll, cnn); ;
+                SqlDataReader emailServerConfigDataReader = emailServerConfigSqlCommand.ExecuteReader();
+                emailServerConfigDataReader.Read();
+
+                if (emailServerConfigDataReader.HasRows)
                 {
                     WriteToFile("Getting Email Configuration from Database {0}");
-                    smtpServer = dataReader["SMTPServer"].ToString();
-                    smtpPort = dataReader["Port"].ToString();
-                    smtpUsername = dataReader["Username"].ToString();
-                    smtpPassword = PasswordDecryptionUtil.Decrypt(dataReader["Password"].ToString());
+                    smtpServer = emailServerConfigDataReader["SMTPServer"].ToString();
+                    smtpPort = emailServerConfigDataReader["Port"].ToString();
+                    smtpUsername = emailServerConfigDataReader["Username"].ToString();
+                    smtpPassword = PasswordDecryptionUtil.Decrypt(emailServerConfigDataReader["Password"].ToString());
                 }
                 else
                 {
@@ -145,11 +175,11 @@ namespace SSLCertificateTrackEmailNotification
                 emailSender = ConfigurationManager.AppSettings["EmailSender"];
                 emailSubject = ConfigurationManager.AppSettings["EmailSubject"];
 
-                MailMessage emailMessage = new MailMessage()
+                emailMessage = new MailMessage()
                 {
                     From = new MailAddress(emailSender),
                     IsBodyHtml = true,
-                    Body = GetHtml(),
+                    Body = GetHtml(rows),
                     Subject = emailSubject,
                 };
 
@@ -160,7 +190,7 @@ namespace SSLCertificateTrackEmailNotification
                     emailMessage.To.Add(new MailAddress(recipient));
                 }
 
-                SmtpClient Client = new SmtpClient
+                smtpClient = new SmtpClient
                 {
                     Host = smtpServer,
                     Port = Convert.ToInt32(smtpPort),
@@ -171,11 +201,11 @@ namespace SSLCertificateTrackEmailNotification
 
                 WriteToFile("Sending Email {0}");
 
-                Client.Send(emailMessage);
+                smtpClient.Send(emailMessage);
 
                 WriteToFile("SSL Certificate Email Sent successfully {0}");
-                dataReader.Close();
-                cmd.Dispose();
+                emailServerConfigDataReader.Close();
+                emailServerConfigSqlCommand.Dispose();
                 cnn.Close();
             }
             catch (Exception ex)
@@ -188,12 +218,13 @@ namespace SSLCertificateTrackEmailNotification
         /// Use to Format the HTML Body of the Email
         /// </summary>
         /// <returns></returns>
-        private string GetHtml()
+        private string GetHtml(List<Dictionary<string, string>> rows)
         {
             try
             {
-                string messageBody = "<font>The following are the records: </font><br><br>";
-                //if (grid.RowCount == 0) return messageBody;
+                int expireNumDays = Convert.ToInt32(ConfigurationManager.AppSettings["ExpireDeliveryDays"]);
+                DateTime aboutToExpireDate = DateTime.Now.AddDays(expireNumDays);
+                string messageBody = $"<font>The following are certificate(s) expiring in {expireNumDays}(s) or have expired: </font><br><br>";
                 string htmlTableStart = "<table style=\"border-collapse:collapse; text-align:center;\" >";
                 string htmlTableEnd = "</table>";
                 string htmlHeaderRowStart = "<tr style=\"background-color:#6FA1D2; color:#ffffff;\">";
@@ -205,27 +236,34 @@ namespace SSLCertificateTrackEmailNotification
 
                 messageBody += htmlTableStart;
                 messageBody += htmlHeaderRowStart;
+                messageBody += htmlTdStart + "Certificate Category" + htmlTdEnd;
                 messageBody += htmlTdStart + "Work Order Tracking #" + htmlTdEnd;
-                messageBody += htmlTdStart + "Certificate Name" + htmlTdEnd;
                 messageBody += htmlTdStart + "Certificate Expiration Date" + htmlTdEnd;
                 messageBody += htmlHeaderRowEnd;
 
                 //Loop all the rows from grid vew and added to html td  
-                // for (int i = 0; i <= grid.RowCount - 1; i++)
-                // {
-                messageBody = messageBody + htmlTrStart;
-                messageBody = messageBody + htmlTdStart + "WO# 58901452" + htmlTdEnd; //adding Work Order Tracking #
-                messageBody = messageBody + htmlTdStart + "Gmail Test Certificate" + htmlTdEnd; //adding Certificate Name  
-                messageBody = messageBody + htmlTdStart + "01/02/2022" + htmlTdEnd; //adding Certificate Expiration Date
-                messageBody = messageBody + htmlTrEnd;
-                // }
+                foreach(Dictionary<string, string> column in rows)
+                {
+                    DateTime expireDate = DateTime.Parse(column["CertificateExpirationDate"]);
+
+                    if (expireDate <= aboutToExpireDate)
+                    {
+                        messageBody += htmlTrStart;
+                        messageBody = messageBody + htmlTdStart + column["CertificateCategoryName"] + htmlTdEnd; 
+                        messageBody = messageBody + htmlTdStart + column["WorkOrderNumber"] + htmlTdEnd;  
+                        messageBody = messageBody + htmlTdStart + Convert.ToDateTime(column["CertificateExpirationDate"]).ToString("MM/dd/yyyy") + htmlTdEnd;
+                        messageBody += htmlTrEnd;
+                        WriteToFile($"INSIDE IF.  CATEGORY NAME: {column["CertificateCategoryName"]}, WO#: {column["WorkOrderNumber"]}, EXPIRE DATE:{column["CertificateExpirationDate"] }");
+                    }
+                }
                 messageBody += htmlTableEnd;
 
                 return messageBody; // return HTML Table as string from this function  
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return "Exception has been encountered.  Please contact your system's administrator.";
+                WriteToFile($"ERROR WITH HTML GENERATION: {ex}");
+                return $"Exception has been encountered.  Please contact your system's administrator. /n {ex}";
             }
         }
 
