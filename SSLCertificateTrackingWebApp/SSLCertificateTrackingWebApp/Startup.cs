@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SSLCertificateTrackingWebApp.Data;
+using Microsoft.AspNetCore.Server.IISIntegration;
 
 namespace SSLCertificateTrackingWebApp
 {
@@ -32,6 +33,8 @@ namespace SSLCertificateTrackingWebApp
 
             services.AddDbContext<SSLCertificateTrackingWebAppContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("SSLCertificateTrackingWebAppContext")));
+
+            services.AddAuthentication(IISDefaults.AuthenticationScheme);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

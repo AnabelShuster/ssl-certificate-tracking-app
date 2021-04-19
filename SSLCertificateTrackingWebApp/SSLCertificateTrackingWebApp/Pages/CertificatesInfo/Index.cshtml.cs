@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SSLCertificateTrackingWebApp.Data;
 using SSLCertificateTrackingWebApp.Models;
@@ -28,8 +29,19 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
         public MinimalCertificateInfo MinimalCertificateInfo { get; set; }
 
         public string CategorySelectedName;
+
+        [BindProperty(SupportsGet = true)]
+        public string CategorySearchString { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string WorkOrderNumberSearchString { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string ExpireDateSearchString { get; set; }
+
         public async Task OnGetAsync()
         {
+
             CertificateInfo = await _context.CertificateInfo.ToListAsync();
 
             NewCertificateInfoList = new List<MinimalCertificateInfo>();
@@ -45,7 +57,7 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
                     {
                         MinimalCertId = CertificateInfo[i].CertificateID.ToString(),
                         MinimalCertName = CertificateInfo[i].CertificateName,
-                        MinimalCategorySelectedName = CategorySelectedName,
+                        MinimalCategorySelectedName = CategorySelectedName.ToUpper(),
                         MinimalCertWorkOrderNumber = CertificateInfo[i].WorkOrderNumber.ToString(),
                         MinimalCertExpireDate = CertificateInfo[i].CertificateExpirationDate.ToString(("MM/dd/yyyy")),
                         MinimalCertNotes = CertificateInfo[i].Notes
@@ -55,6 +67,34 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
                     NewCertificateInfoList.Add(MinimalCertificateInfo);
                 }
             }
+
+            NewCertificateInfoList = (from e in NewCertificateInfoList orderby e.MinimalCertExpireDate ascending select e).ToList();
+
+            var certList = from m in NewCertificateInfoList
+                           select m;
+            if (!string.IsNullOrEmpty(CategorySearchString))
+            {
+                certList = certList.Where(s => s.MinimalCategorySelectedName.Contains(CategorySearchString.ToUpper()));
+                certList = from e in certList orderby e.MinimalCertExpireDate ascending select e;
+                NewCertificateInfoList = certList.ToList();
+            }
+
+            if (!string.IsNullOrEmpty(WorkOrderNumberSearchString))
+            {
+                certList = certList.Where(s => s.MinimalCertWorkOrderNumber.Contains(WorkOrderNumberSearchString.ToUpper()));
+                certList = from e in certList orderby e.MinimalCertWorkOrderNumber ascending select e;
+                NewCertificateInfoList = certList.ToList();
+            }
+
+            if (!string.IsNullOrEmpty(ExpireDateSearchString))
+            {
+                DateTime aboutToExpireDate = DateTime.Now.AddDays(Convert.ToInt32(ExpireDateSearchString));
+
+                certList = certList.Where(s => DateTime.Parse(s.MinimalCertExpireDate) <= aboutToExpireDate);
+                certList = from e in certList orderby e.MinimalCertExpireDate ascending select e;
+                NewCertificateInfoList = certList.ToList();
+            }
+
         }
     }
 

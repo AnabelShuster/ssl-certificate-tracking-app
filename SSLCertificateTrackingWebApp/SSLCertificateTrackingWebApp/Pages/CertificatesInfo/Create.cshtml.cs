@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,9 +14,7 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
 {
     public class CreateModel : PageModel
     {
-        private readonly Random _random = new Random();
-
-        private readonly SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext _context;
+         private readonly SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext _context;
 
         public CreateModel(SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext context)
         {
@@ -23,22 +22,41 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
         }
 
         [BindProperty]
-        public List<SelectListItem> CertificateCategoryList { get; set; }
+        public List<SelectListItem> CertificateCategoryList { get; set; } = new List<SelectListItem>();
 
         [BindProperty]
         public CertificateInfo CertificateInfo { get; set; }
 
+        public int wo;
+
+
         [BindProperty]
-        public int RandomWorkOrderNumber => _random.Next(999999999);
+        public int RandomWorkOrderNumberNew { get; set; }  //{ get { return RandomWorkOrderNumber; } set { RandomWorkOrderNumber = value; } }
+
+     
+        public int RandomWorkOrderNumber
+        {
+            get
+            {
+                Random _random = new Random();
+                wo = _random.Next(100000000, 999999999);
+                return wo;
+            }
+            set { wo = value; }
+        }
+
 
         public IActionResult OnGet()
         {
+
             CertificateCategoryList = _context.CertificateCategory.Select(a =>
                                  new SelectListItem
                                  {
                                      Value = a.CertificateCategoryID.ToString(),
                                      Text = a.CertificateCategoryName
-                                 }).ToList();            
+                                 }).ToList();
+
+            RandomWorkOrderNumberNew = RandomWorkOrderNumber;
 
             return Page();
         }
@@ -55,8 +73,7 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
             string categorySelected = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryID).FirstOrDefault().ToString();
 
             CertificateInfo.CertificateCategoryID = Convert.ToInt32(categorySelected);
-            CertificateInfo.WorkOrderNumber = RandomWorkOrderNumber;
-
+            
             _context.CertificateInfo.Add(CertificateInfo);
             await _context.SaveChangesAsync();
 
