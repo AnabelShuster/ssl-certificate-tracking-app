@@ -13,19 +13,19 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CertificateInfo.WorkOrderNumber" class="control-label"></label>
-                <input asp-for="CertificateInfo.WorkOrderNumber" value="@Model.RandomWorkOrderNumberNew" readonly class="form-control" />
+                <input asp-for="CertificateInfo.WorkOrderNumber" required class="form-control" />
                 <span asp-validation-for="CertificateInfo.WorkOrderNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CertificateInfo.CertificateCategoryID" class="control-label"></label>
-                <select name="CertificateInfo.CertificateCategoryID" asp-items="Model.CertificateCategoryList">
+                <select name="CertificateInfo.CertificateCategoryID" required asp-items="Model.CertificateCategoryList">
                     <option value="">---Select Certificate Category---</option>
                 </select>
                 <span asp-validation-for="CertificateInfo.CertificateCategoryID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CertificateInfo.CertificateExpirationDate" class="control-label"></label>
-                <input asp-for="CertificateInfo.CertificateExpirationDate" class="form-control" />
+                <input asp-for="CertificateInfo.CertificateExpirationDate" required class="form-control" />
                 <span asp-validation-for="CertificateInfo.CertificateExpirationDate" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -94,7 +94,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="CertificateInfo.Notes" class="control-label"></label>
-                <textarea asp-for="CertificateInfo.Notes" class="form-control"></textarea>
+                <textarea asp-for="CertificateInfo.Notes" required class="form-control"></textarea>
+                <span asp-validation-for="CertificateInfo.Notes" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CertificateInfo.IssuedEmailAddress" class="control-label"></label>

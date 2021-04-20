@@ -29,23 +29,6 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
 
         public int wo;
 
-
-        [BindProperty]
-        public int RandomWorkOrderNumberNew { get; set; }  //{ get { return RandomWorkOrderNumber; } set { RandomWorkOrderNumber = value; } }
-
-     
-        public int RandomWorkOrderNumber
-        {
-            get
-            {
-                Random _random = new Random();
-                wo = _random.Next(100000000, 999999999);
-                return wo;
-            }
-            set { wo = value; }
-        }
-
-
         public IActionResult OnGet()
         {
 
@@ -55,8 +38,6 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
                                      Value = a.CertificateCategoryID.ToString(),
                                      Text = a.CertificateCategoryName
                                  }).ToList();
-
-            RandomWorkOrderNumberNew = RandomWorkOrderNumber;
 
             return Page();
         }
