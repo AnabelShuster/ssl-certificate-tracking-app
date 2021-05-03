@@ -31,13 +31,23 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificateCategories
             string[] currentUserFormat = currentUser.Split("\\");
             string currentNameOnly = currentUserFormat[1];
 
-            string modifyAccessUser = _configuration.GetValue<string>("ModifyAccess").ToUpper();
-            string fullAccessUser = _configuration.GetValue<string>("FullAccess").ToUpper();
+            string[] modifyAccessUsers = _configuration.GetValue<string>("ModifyAccess").ToUpper().Split(";");
+            string[] fullAccessUsers = _configuration.GetValue<string>("FullAccess").ToUpper().Split(";");
 
-
-            if (currentNameOnly == fullAccessUser || currentNameOnly == modifyAccessUser)
+            foreach (var fullAccessUser in fullAccessUsers)
             {
-                return Page();
+                if (currentNameOnly == fullAccessUser)
+                {
+                    return Page();
+                }
+            }
+
+            foreach (var modifyAccessUser in modifyAccessUsers)
+            {
+                if (currentNameOnly == modifyAccessUser)
+                {
+                    return Page();
+                }
             }
 
             return RedirectToPage("/Error");

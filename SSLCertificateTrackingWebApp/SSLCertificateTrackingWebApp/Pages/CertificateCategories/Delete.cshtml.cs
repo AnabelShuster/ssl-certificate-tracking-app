@@ -35,23 +35,25 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificateCategories
             string[] currentUserFormat = currentUser.Split("\\");
             string currentNameOnly = currentUserFormat[1];
 
-            string fullAccessUser = _configuration.GetValue<string>("FullAccess").ToUpper();
+            string[] fullAccessUsers = _configuration.GetValue<string>("FullAccess").ToUpper().Split(";");
 
-
-            if (currentNameOnly == fullAccessUser)
+            foreach (var fullAccessUser in fullAccessUsers)
             {
-                if (id == null)
+                if (currentNameOnly == fullAccessUser)
                 {
-                    return NotFound();
-                }
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
 
-                CertificateCategory = await _context.CertificateCategory.FirstOrDefaultAsync(m => m.CertificateCategoryID == id);
+                    CertificateCategory = await _context.CertificateCategory.FirstOrDefaultAsync(m => m.CertificateCategoryID == id);
 
-                if (CertificateCategory == null)
-                {
-                    return NotFound();
+                    if (CertificateCategory == null)
+                    {
+                        return NotFound();
+                    }
+                    return Page();
                 }
-                return Page();
             }
 
             return RedirectToPage("/Error");

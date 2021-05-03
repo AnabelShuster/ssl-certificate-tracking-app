@@ -21,6 +21,7 @@ namespace SSLCertificateTrackingWebApp.Models
         public int CertificateCategoryID { get; set; }
 
         [Required]
+        [Range(1, 2147483647)]        
         [Display(Name = "Work Order Number")]
         public int WorkOrderNumber { get; set; }
 

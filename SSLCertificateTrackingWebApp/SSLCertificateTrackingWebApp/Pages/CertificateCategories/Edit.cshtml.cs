@@ -34,24 +34,45 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificateCategories
             string[] currentUserFormat = currentUser.Split("\\");
             string currentNameOnly = currentUserFormat[1];
 
-            string modifyAccessUser = _configuration.GetValue<string>("ModifyAccess").ToUpper();
-            string fullAccessUser = _configuration.GetValue<string>("FullAccess").ToUpper();
+            string[] modifyAccessUsers = _configuration.GetValue<string>("ModifyAccess").ToUpper().Split(";");
+            string[] fullAccessUsers = _configuration.GetValue<string>("FullAccess").ToUpper().Split(";");
 
-
-            if (currentNameOnly == fullAccessUser || currentNameOnly == modifyAccessUser)
+            foreach (var fullAccessUser in fullAccessUsers)
             {
-                if (id == null)
+                if (currentNameOnly == fullAccessUser)
                 {
-                    return NotFound();
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    CertificateCategory = await _context.CertificateCategory.FirstOrDefaultAsync(m => m.CertificateCategoryID == id);
+
+                    if (CertificateCategory == null)
+                    {
+                        return NotFound();
+                    }
+                    return Page();
                 }
+            }
 
-                CertificateCategory = await _context.CertificateCategory.FirstOrDefaultAsync(m => m.CertificateCategoryID == id);
-
-                if (CertificateCategory == null)
+            foreach (var modifyAccessUser in modifyAccessUsers)
+            {
+                if (currentNameOnly == modifyAccessUser)
                 {
-                    return NotFound();
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    CertificateCategory = await _context.CertificateCategory.FirstOrDefaultAsync(m => m.CertificateCategoryID == id);
+
+                    if (CertificateCategory == null)
+                    {
+                        return NotFound();
+                    }
+                    return Page();
                 }
-                return Page();
             }
 
             return RedirectToPage("/Error");

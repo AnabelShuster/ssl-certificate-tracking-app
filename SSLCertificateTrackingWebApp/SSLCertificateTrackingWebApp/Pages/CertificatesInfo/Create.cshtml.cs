@@ -42,12 +42,13 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
             string[] currentUserFormat = currentUser.Split("\\");
             string currentNameOnly = currentUserFormat[1];
 
-            string modifyAccessUser = _configuration.GetValue<string>("ModifyAccess").ToUpper();
-            string fullAccessUser = _configuration.GetValue<string>("FullAccess").ToUpper();
-
-
-            if (currentNameOnly == fullAccessUser || currentNameOnly == modifyAccessUser)
+            string[] modifyAccessUsers = _configuration.GetValue<string>("ModifyAccess").ToUpper().Split(";");
+            string[] fullAccessUsers = _configuration.GetValue<string>("FullAccess").ToUpper().Split(";");
+        
+            foreach (var fullAccessUser in fullAccessUsers)
             {
+                if (currentNameOnly == fullAccessUser)
+                {
                     CertificateCategoryList = _context.CertificateCategory.Select(a =>
                     new SelectListItem
                     {
@@ -56,10 +57,25 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
                     }).ToList();
 
                     return Page();
-             }
+                }
+            }
 
-        
-             return RedirectToPage("/Error");
+            foreach (var modifyAccessUser in modifyAccessUsers)
+            {
+                if (currentNameOnly == modifyAccessUser)
+                {
+                    CertificateCategoryList = _context.CertificateCategory.Select(a =>
+                    new SelectListItem
+                    {
+                        Value = a.CertificateCategoryID.ToString(),
+                        Text = a.CertificateCategoryName
+                    }).ToList();
+
+                    return Page();
+                }
+            }
+
+            return RedirectToPage("/Error");
        
         }
 

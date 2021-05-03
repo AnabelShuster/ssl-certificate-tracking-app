@@ -42,43 +42,83 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
             string[] currentUserFormat = currentUser.Split("\\");
             string currentNameOnly = currentUserFormat[1];
 
-            string modifyAccessUser = _configuration.GetValue<string>("ModifyAccess").ToUpper();
-            string fullAccessUser = _configuration.GetValue<string>("FullAccess").ToUpper();
+            string[] modifyAccessUsers = _configuration.GetValue<string>("ModifyAccess").ToUpper().Split(";");
+            string[] fullAccessUsers = _configuration.GetValue<string>("FullAccess").ToUpper().Split(";");
 
-
-            if (currentNameOnly == fullAccessUser || currentNameOnly == modifyAccessUser)
+            foreach (var fullAccessUser in fullAccessUsers)
             {
-                if (id == null)
+                if (currentNameOnly == fullAccessUser)
                 {
-                    return NotFound();
-                }
-
-                CertificateInfo = await _context.CertificateInfo.FirstOrDefaultAsync(m => m.CertificateID == id);
-
-                CategorySelectedId = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryID).FirstOrDefault().ToString();
-                CategorySelectedName = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryName).FirstOrDefault().ToString();
-
-                //Creates List of Category Id and Category Name from the CertificateCategory table
-                CertificateCategoryList = _context.CertificateCategory.Select(a =>
-                     new SelectListItem
-                     {
-                         Value = a.CertificateCategoryID.ToString(),
-                         Text = a.CertificateCategoryName,
-                     }).ToList();
-
-                for (int i = 0; i < CertificateCategoryList.Count; i++)
-                {
-                    if (CertificateCategoryList[i].Value == CategorySelectedId)
+                    if (id == null)
                     {
-                        CertificateCategoryList[i].Selected = true;
+                        return NotFound();
                     }
-                }
 
-                if (CertificateInfo == null)
-                {
-                    return NotFound();
+                    CertificateInfo = await _context.CertificateInfo.FirstOrDefaultAsync(m => m.CertificateID == id);
+
+                    CategorySelectedId = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryID).FirstOrDefault().ToString();
+                    CategorySelectedName = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryName).FirstOrDefault().ToString();
+
+                    //Creates List of Category Id and Category Name from the CertificateCategory table
+                    CertificateCategoryList = _context.CertificateCategory.Select(a =>
+                         new SelectListItem
+                         {
+                             Value = a.CertificateCategoryID.ToString(),
+                             Text = a.CertificateCategoryName,
+                         }).ToList();
+
+                    for (int i = 0; i < CertificateCategoryList.Count; i++)
+                    {
+                        if (CertificateCategoryList[i].Value == CategorySelectedId)
+                        {
+                            CertificateCategoryList[i].Selected = true;
+                        }
+                    }
+
+                    if (CertificateInfo == null)
+                    {
+                        return NotFound();
+                    }
+                    return Page();
                 }
-                return Page();
+            }
+
+            foreach (var modifyAccessUser in modifyAccessUsers)
+            {
+                if (currentNameOnly == modifyAccessUser)
+                {
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    CertificateInfo = await _context.CertificateInfo.FirstOrDefaultAsync(m => m.CertificateID == id);
+
+                    CategorySelectedId = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryID).FirstOrDefault().ToString();
+                    CategorySelectedName = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryName).FirstOrDefault().ToString();
+
+                    //Creates List of Category Id and Category Name from the CertificateCategory table
+                    CertificateCategoryList = _context.CertificateCategory.Select(a =>
+                         new SelectListItem
+                         {
+                             Value = a.CertificateCategoryID.ToString(),
+                             Text = a.CertificateCategoryName,
+                         }).ToList();
+
+                    for (int i = 0; i < CertificateCategoryList.Count; i++)
+                    {
+                        if (CertificateCategoryList[i].Value == CategorySelectedId)
+                        {
+                            CertificateCategoryList[i].Selected = true;
+                        }
+                    }
+
+                    if (CertificateInfo == null)
+                    {
+                        return NotFound();
+                    }
+                    return Page();
+                }
             }
 
             return RedirectToPage("/Error");

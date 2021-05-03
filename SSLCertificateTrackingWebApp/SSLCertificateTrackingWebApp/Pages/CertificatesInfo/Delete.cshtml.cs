@@ -34,26 +34,28 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
             string[] currentUserFormat = currentUser.Split("\\");
             string currentNameOnly = currentUserFormat[1];
 
-            string fullAccessUser = _configuration.GetValue<string>("FullAccess").ToUpper();
+            string[] fullAccessUsers = _configuration.GetValue<string>("FullAccess").ToUpper().Split(";");
 
-
-            if (currentNameOnly == fullAccessUser)
+            foreach (var fullAccessUser in fullAccessUsers)
             {
-
-                if (id == null)
+                if (currentNameOnly == fullAccessUser)
                 {
-                    return NotFound();
-                }
 
-                CertificateInfo = await _context.CertificateInfo.FirstOrDefaultAsync(m => m.CertificateID == id);
-                CategorySelectedId = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryID).FirstOrDefault().ToString();
-                CategorySelectedName = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryName).FirstOrDefault().ToString();
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
 
-                if (CertificateInfo == null)
-                {
-                    return NotFound();
+                    CertificateInfo = await _context.CertificateInfo.FirstOrDefaultAsync(m => m.CertificateID == id);
+                    CategorySelectedId = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryID).FirstOrDefault().ToString();
+                    CategorySelectedName = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryName).FirstOrDefault().ToString();
+
+                    if (CertificateInfo == null)
+                    {
+                        return NotFound();
+                    }
+                    return Page();
                 }
-                return Page();
             }
 
             return RedirectToPage("/Error");

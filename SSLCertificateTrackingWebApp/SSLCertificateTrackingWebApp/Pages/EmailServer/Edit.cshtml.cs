@@ -37,20 +37,39 @@ namespace SSLCertificateTrackingWebApp.Pages.EmailServer
             string[] currentUserFormat = currentUser.Split("\\");
             string currentNameOnly = currentUserFormat[1];
 
-            string modifyAccessUser = _configuration.GetValue<string>("ModifyAccess").ToUpper();
-            string fullAccessUser = _configuration.GetValue<string>("FullAccess").ToUpper();
+            string[] modifyAccessUsers = _configuration.GetValue<string>("ModifyAccess").ToUpper().Split(";");
+            string[] fullAccessUsers = _configuration.GetValue<string>("FullAccess").ToUpper().Split(";");
 
-
-            if (currentNameOnly == fullAccessUser || currentNameOnly == modifyAccessUser)
+            foreach (var fullAccessUser in fullAccessUsers)
             {
-                if (id == null)
+
+                if (currentNameOnly == fullAccessUser)
                 {
-                    return NotFound();
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    EmailServerConfiguration = await _context.EmailServerConfiguration.FirstOrDefaultAsync(m => m.ID == id);
+
+                    return Page();
                 }
 
-                EmailServerConfiguration = await _context.EmailServerConfiguration.FirstOrDefaultAsync(m => m.ID == id);
+            }
 
-                return Page();
+            foreach (var modifyAccessUser in modifyAccessUsers)
+            {
+                if (currentNameOnly == modifyAccessUser)
+                {
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    EmailServerConfiguration = await _context.EmailServerConfiguration.FirstOrDefaultAsync(m => m.ID == id);
+
+                    return Page();
+                }
             }
 
             return RedirectToPage("/Error");
