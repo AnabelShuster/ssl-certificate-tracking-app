@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SSLCertificateTrackingWebApp.Data;
 using SSLCertificateTrackingWebApp.Models;
 
@@ -14,12 +15,7 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
 {
     public class CreateModel : PageModel
     {
-         private readonly SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext _context;
-
-        public CreateModel(SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext context)
-        {
-            _context = context;
-        }
+        private readonly SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext _context;
 
         [BindProperty]
         public List<SelectListItem> CertificateCategoryList { get; set; } = new List<SelectListItem>();
@@ -29,17 +25,42 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
 
         public int wo;
 
+        public IConfiguration Configuration { get; }
+
+        private readonly IConfiguration _configuration;
+
+        public CreateModel(SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext context, IConfiguration iconfig)
+        {
+            _context = context;
+
+            _configuration = iconfig;
+        }
+
         public IActionResult OnGet()
         {
+            string currentUser = HttpContext.User.Identity.Name.ToUpper();
+            string[] currentUserFormat = currentUser.Split("\\");
+            string currentNameOnly = currentUserFormat[1];
 
-            CertificateCategoryList = _context.CertificateCategory.Select(a =>
-                                 new SelectListItem
-                                 {
-                                     Value = a.CertificateCategoryID.ToString(),
-                                     Text = a.CertificateCategoryName
-                                 }).ToList();
+            string modifyAccessUser = _configuration.GetValue<string>("ModifyAccess").ToUpper();
+            string fullAccessUser = _configuration.GetValue<string>("FullAccess").ToUpper();
 
-            return Page();
+
+            if (currentNameOnly == fullAccessUser || currentNameOnly == modifyAccessUser)
+            {
+                    CertificateCategoryList = _context.CertificateCategory.Select(a =>
+                    new SelectListItem
+                    {
+                        Value = a.CertificateCategoryID.ToString(),
+                        Text = a.CertificateCategoryName
+                    }).ToList();
+
+                    return Page();
+             }
+
+        
+             return RedirectToPage("/Error");
+       
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
@@ -54,7 +75,7 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificatesInfo
             string categorySelected = _context.CertificateCategory.Where(a => a.CertificateCategoryID == Convert.ToInt32(CertificateInfo.CertificateCategoryID)).Select(a => a.CertificateCategoryID).FirstOrDefault().ToString();
 
             CertificateInfo.CertificateCategoryID = Convert.ToInt32(categorySelected);
-            
+
             _context.CertificateInfo.Add(CertificateInfo);
             await _context.SaveChangesAsync();
 

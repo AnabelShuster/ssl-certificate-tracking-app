@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using SSLCertificateTrackingWebApp.Data;
 using SSLCertificateTrackingWebApp.Models;
 
@@ -14,14 +15,32 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificateCategories
     {
         private readonly SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext _context;
 
-        public CreateModel(SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext context)
+        public IConfiguration Configuration { get; }
+
+        private readonly IConfiguration _configuration;
+
+        public CreateModel(SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext context, IConfiguration iconfig)
         {
             _context = context;
+            _configuration = iconfig;
         }
 
         public IActionResult OnGet()
         {
-            return Page();
+            string currentUser = HttpContext.User.Identity.Name.ToUpper();
+            string[] currentUserFormat = currentUser.Split("\\");
+            string currentNameOnly = currentUserFormat[1];
+
+            string modifyAccessUser = _configuration.GetValue<string>("ModifyAccess").ToUpper();
+            string fullAccessUser = _configuration.GetValue<string>("FullAccess").ToUpper();
+
+
+            if (currentNameOnly == fullAccessUser || currentNameOnly == modifyAccessUser)
+            {
+                return Page();
+            }
+
+            return RedirectToPage("/Error");
         }
 
         [BindProperty]

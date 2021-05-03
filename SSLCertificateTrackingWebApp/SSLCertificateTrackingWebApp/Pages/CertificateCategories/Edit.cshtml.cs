@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SSLCertificateTrackingWebApp.Data;
 using SSLCertificateTrackingWebApp.Models;
 
@@ -14,10 +15,14 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificateCategories
     public class EditModel : PageModel
     {
         private readonly SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext _context;
+ 
+        public IConfiguration Configuration { get; }
 
-        public EditModel(SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext context)
+        private readonly IConfiguration _configuration;
+        public EditModel(SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext context, IConfiguration iconfig)
         {
             _context = context;
+            _configuration = iconfig;
         }
 
         [BindProperty]
@@ -25,18 +30,31 @@ namespace SSLCertificateTrackingWebApp.Pages.CertificateCategories
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
+            string currentUser = HttpContext.User.Identity.Name.ToUpper();
+            string[] currentUserFormat = currentUser.Split("\\");
+            string currentNameOnly = currentUserFormat[1];
+
+            string modifyAccessUser = _configuration.GetValue<string>("ModifyAccess").ToUpper();
+            string fullAccessUser = _configuration.GetValue<string>("FullAccess").ToUpper();
+
+
+            if (currentNameOnly == fullAccessUser || currentNameOnly == modifyAccessUser)
             {
-                return NotFound();
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                CertificateCategory = await _context.CertificateCategory.FirstOrDefaultAsync(m => m.CertificateCategoryID == id);
+
+                if (CertificateCategory == null)
+                {
+                    return NotFound();
+                }
+                return Page();
             }
 
-            CertificateCategory = await _context.CertificateCategory.FirstOrDefaultAsync(m => m.CertificateCategoryID == id);
-
-            if (CertificateCategory == null)
-            {
-                return NotFound();
-            }
-            return Page();
+            return RedirectToPage("/Error");
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for

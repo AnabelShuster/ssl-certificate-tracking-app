@@ -12,3 +12,5 @@
 *.user
 
 /SSLCertificateTrackingWebApp/SSLCertificateTrackEmailNotificationSetup/Debug
+/SSLCertificateTrackingWebApp/SSLCertificateTrackEmailNotificationSetup/Release/SSLCertificateTrackEmailNotificationSetup.msi
+/SSLCertificateTrackingWebApp/SSLCertificateTrackEmailNotificationSetup/Release/SSLCertificateTrackEmailNotificationSetup.zip
