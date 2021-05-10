@@ -30,11 +30,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="CertificateInfo.CertificateName" class="control-label"></label>
-                <input asp-for="CertificateInfo.CertificateName" class="form-control" />
+                <input asp-for="CertificateInfo.CertificateName" required class="form-control" />
+                <span asp-validation-for="CertificateInfo.CertificateName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CertificateInfo.CommonName" class="control-label"></label>
-                <input asp-for="CertificateInfo.CommonName" class="form-control" />
+                <input asp-for="CertificateInfo.CommonName" required class="form-control" />
+                <span asp-validation-for="CertificateInfo.CommonName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CertificateInfo.CertificateTemplate" class="control-label"></label>
