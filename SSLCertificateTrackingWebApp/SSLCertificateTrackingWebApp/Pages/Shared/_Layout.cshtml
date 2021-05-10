@@ -9,19 +9,19 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color: royalblue">
             <div class="container">
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <p class="nav navbar-text navbar-right">Hello, @User.Identity.Name!</p>
+                    <p class="nav navbar-text navbar-right text-light">Hello, @User.Identity.Name!</p>
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link text-light" asp-area="" asp-page="/CertificatesInfo/Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/EmailServer/Index">Email Server Settings</a>
+                            <a class="nav-link text-light" asp-area="" asp-page="/CertificateCategories/Index">Certificate Category</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            <a class="nav-link text-light" asp-area="" asp-page="/EmailServer/Index">Email Server Settings</a>
                         </li>
                     </ul>
                 </div>
@@ -36,7 +36,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - SSLCertificateTrackingWebApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2021 - SSLCertificateTrackingWebApp
         </div>
     </footer>
 

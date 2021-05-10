@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,15 +10,15 @@ using Microsoft.Extensions.Configuration;
 using SSLCertificateTrackingWebApp.Data;
 using SSLCertificateTrackingWebApp.Models;
 
-namespace SSLCertificateTrackingWebApp.Pages.EmailServer
+namespace SSLCertificateTrackingWebApp.Pages.CertificateCategories
 {
     public class EditModel : PageModel
     {
         private readonly SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext _context;
+ 
         public IConfiguration Configuration { get; }
 
         private readonly IConfiguration _configuration;
-
         public EditModel(SSLCertificateTrackingWebApp.Data.SSLCertificateTrackingWebAppContext context, IConfiguration iconfig)
         {
             _context = context;
@@ -29,7 +26,7 @@ namespace SSLCertificateTrackingWebApp.Pages.EmailServer
         }
 
         [BindProperty]
-        public EmailServerConfiguration EmailServerConfiguration { get; set; }
+        public CertificateCategory CertificateCategory { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -42,7 +39,6 @@ namespace SSLCertificateTrackingWebApp.Pages.EmailServer
 
             foreach (var fullAccessUser in fullAccessUsers)
             {
-
                 if (currentNameOnly == fullAccessUser)
                 {
                     if (id == null)
@@ -50,11 +46,14 @@ namespace SSLCertificateTrackingWebApp.Pages.EmailServer
                         return NotFound();
                     }
 
-                    EmailServerConfiguration = await _context.EmailServerConfiguration.FirstOrDefaultAsync(m => m.ID == id);
+                    CertificateCategory = await _context.CertificateCategory.FirstOrDefaultAsync(m => m.CertificateCategoryID == id);
 
+                    if (CertificateCategory == null)
+                    {
+                        return NotFound();
+                    }
                     return Page();
                 }
-
             }
 
             foreach (var modifyAccessUser in modifyAccessUsers)
@@ -66,8 +65,12 @@ namespace SSLCertificateTrackingWebApp.Pages.EmailServer
                         return NotFound();
                     }
 
-                    EmailServerConfiguration = await _context.EmailServerConfiguration.FirstOrDefaultAsync(m => m.ID == id);
+                    CertificateCategory = await _context.CertificateCategory.FirstOrDefaultAsync(m => m.CertificateCategoryID == id);
 
+                    if (CertificateCategory == null)
+                    {
+                        return NotFound();
+                    }
                     return Page();
                 }
             }
@@ -79,42 +82,35 @@ namespace SSLCertificateTrackingWebApp.Pages.EmailServer
         // more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-
-            if (EmailServerConfiguration.ID == 0)
+            if (!ModelState.IsValid)
             {
-                EmailServerConfiguration.Password = PasswordEncryptionUtil.Encrypt(EmailServerConfiguration.Password);
-                _context.EmailServerConfiguration.Add(EmailServerConfiguration);
+                return Page();
+            }
+
+            _context.Attach(CertificateCategory).State = EntityState.Modified;
+
+            try
+            {
                 await _context.SaveChangesAsync();
             }
-            else
+            catch (DbUpdateConcurrencyException)
             {
-                _context.Attach(EmailServerConfiguration).State = EntityState.Modified;
-
-                try
+                if (!CertificateCategoryExists(CertificateCategory.CertificateCategoryID))
                 {
-                    EmailServerConfiguration.Password = PasswordEncryptionUtil.Encrypt(EmailServerConfiguration.Password);
-
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!EmailServerConfigurationExists(EmailServerConfiguration.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
             }
 
             return RedirectToPage("./Index");
         }
 
-        private bool EmailServerConfigurationExists(int id)
+        private bool CertificateCategoryExists(int id)
         {
-            return _context.EmailServerConfiguration.Any(e => e.ID == id);
+            return _context.CertificateCategory.Any(e => e.CertificateCategoryID == id);
         }
     }
 }

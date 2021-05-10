@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SSLCertificateTrackingWebApp.Data;
 
 namespace SSLCertificateTrackingWebApp.Migrations
 {
     [DbContext(typeof(SSLCertificateTrackingWebAppContext))]
-    partial class SSLCertificateTrackingWebAppContextModelSnapshot : ModelSnapshot
+    [Migration("20210412161727_SSLCertificateTracking")]
+    partial class SSLCertificateTracking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

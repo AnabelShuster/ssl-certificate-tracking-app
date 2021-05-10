@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SSLCertificateTrackingWebApp.Data;
+using Microsoft.AspNetCore.Server.IISIntegration;
 
 namespace SSLCertificateTrackingWebApp
 {
@@ -25,10 +26,15 @@ namespace SSLCertificateTrackingWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            services.AddRazorPages().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddPageRoute("/CertificatesInfo/Index", "");
+            });
 
             services.AddDbContext<SSLCertificateTrackingWebAppContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("SSLCertificateTrackingWebAppContext")));
+
+            services.AddAuthentication(IISDefaults.AuthenticationScheme);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
